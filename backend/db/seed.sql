@@ -34,12 +34,13 @@ INSERT INTO circles (title, description, teacher_name, age_group)
 SELECT 'Рисование', 'Основы композиции, цвета и аккуратной работы с материалами.', 'Анна Павловна', '8+'
 WHERE NOT EXISTS (SELECT 1 FROM circles WHERE title = 'Рисование');
 
-INSERT INTO users (name, email, password_hash, role)
+INSERT INTO users (name, email, password_hash, role, gender)
 VALUES (
   'Администратор',
   'admin@hram.local',
   '$2a$10$MHkvSem6pVaWnwfdRqsxMOYuK1BCUrLpJM7JadAdemhdnLS3nu93S',
-  'admin'
+  'admin',
+  'female'
 )
 ON CONFLICT (email) DO NOTHING;
 

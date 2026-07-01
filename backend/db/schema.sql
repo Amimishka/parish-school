@@ -7,6 +7,12 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
+  CREATE TYPE user_gender AS ENUM ('female', 'male');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
   CREATE TYPE attendance_status AS ENUM ('attending', 'absent');
 EXCEPTION
   WHEN duplicate_object THEN null;
@@ -18,8 +24,12 @@ CREATE TABLE IF NOT EXISTS users (
   email varchar(160) NOT NULL UNIQUE,
   password_hash text NOT NULL,
   role user_role NOT NULL DEFAULT 'user',
+  gender user_gender NOT NULL DEFAULT 'female',
   created_at timestamptz NOT NULL DEFAULT now()
 );
+
+ALTER TABLE users
+  ADD COLUMN IF NOT EXISTS gender user_gender NOT NULL DEFAULT 'female';
 
 CREATE TABLE IF NOT EXISTS events (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),

@@ -703,7 +703,7 @@ function Schedule({ lessons, setAttendance }) {
 
 function Profile({ user, circles, onAuthSuccess, setMessage, setPage }) {
   const [mode, setMode] = useState('login');
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', gender: '' });
   const joinedCircles = circles.filter((circle) => circle.is_joined);
 
   async function submit(event) {
@@ -712,7 +712,7 @@ function Profile({ user, circles, onAuthSuccess, setMessage, setPage }) {
     const body =
       mode === 'login'
         ? { email: form.email, password: form.password }
-        : { name: form.name, email: form.email, password: form.password };
+        : { name: form.name, email: form.email, password: form.password, gender: form.gender };
 
     try {
       const data = await apiRequest(path, {
@@ -733,14 +733,28 @@ function Profile({ user, circles, onAuthSuccess, setMessage, setPage }) {
         <p>После входа появится личное расписание и запись на кружки.</p>
         <form className="auth-form" onSubmit={submit}>
           {mode === 'register' && (
-            <label>
-              Имя
-              <input
-                value={form.name}
-                onChange={(event) => setForm({ ...form, name: event.target.value })}
-                required
-              />
-            </label>
+            <>
+              <label>
+                Имя
+                <input
+                  value={form.name}
+                  onChange={(event) => setForm({ ...form, name: event.target.value })}
+                  required
+                />
+              </label>
+              <label>
+                Пол
+                <select
+                  value={form.gender}
+                  onChange={(event) => setForm({ ...form, gender: event.target.value })}
+                  required
+                >
+                  <option value="">Выберите пол</option>
+                  <option value="female">Женский</option>
+                  <option value="male">Мужской</option>
+                </select>
+              </label>
+            </>
           )}
           <label>
             Email
@@ -1247,7 +1261,7 @@ function Admin({ events, circles, refreshEvents, refreshCircles, refreshLessons,
                     <small>{person.role === 'admin' ? 'администратор' : 'пользователь'}</small>
                     <strong>
                       {person.circles.length > 0
-                        ? `записан(а): ${person.circles.map((circle) => circle.title).join(', ')}`
+                        ? `${joinedWord(person.gender)}: ${person.circles.map((circle) => circle.title).join(', ')}`
                         : 'кружки не выбраны'}
                     </strong>
                   </span>
@@ -1310,6 +1324,10 @@ function withFallbackEvents(items) {
 
 function scrollToEvents() {
   document.getElementById('events')?.scrollIntoView({ behavior: 'smooth' });
+}
+
+function joinedWord(gender) {
+  return gender === 'male' ? 'записан' : 'записана';
 }
 
 function formatDate(value) {

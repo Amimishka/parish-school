@@ -16,7 +16,7 @@ app.use(express.json());
 
 function signUser(user) {
   return jwt.sign(
-    { id: user.id, name: user.name, email: user.email, role: user.role },
+    { id: user.id, name: user.name, email: user.email, role: user.role, gender: user.gender },
     process.env.JWT_SECRET,
     { expiresIn: '7d' },
   );
@@ -27,20 +27,24 @@ app.get('/api/health', (req, res) => {
 });
 
 app.post('/api/auth/register', async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, gender } = req.body;
 
-  if (!name || !email || !password) {
-    return res.status(400).json({ message: 'Заполните имя, email и пароль' });
+  if (!name || !email || !password || !gender) {
+    return res.status(400).json({ message: 'Заполните имя, email, пароль и пол' });
+  }
+
+  if (!['female', 'male'].includes(gender)) {
+    return res.status(400).json({ message: 'Выберите пол из списка' });
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
 
   try {
     const { rows } = await query(
-      `INSERT INTO users (name, email, password_hash)
-       VALUES ($1, $2, $3)
-       RETURNING id, name, email, role`,
-      [name, email.toLowerCase(), passwordHash],
+      `INSERT INTO users (name, email, password_hash, gender)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, name, email, role, gender`,
+      [name, email.toLowerCase(), passwordHash, gender],
     );
     const user = rows[0];
     return res.status(201).json({ user, token: signUser(user) });
@@ -56,7 +60,7 @@ app.post('/api/auth/login', async (req, res) => {
   const { email, password } = req.body;
 
   const { rows } = await query(
-    'SELECT id, name, email, role, password_hash FROM users WHERE email = $1',
+    'SELECT id, name, email, role, gender, password_hash FROM users WHERE email = $1',
     [email?.toLowerCase()],
   );
 
@@ -70,6 +74,7 @@ app.post('/api/auth/login', async (req, res) => {
     name: user.name,
     email: user.email,
     role: user.role,
+    gender: user.gender,
   };
 
   return res.json({ user: publicUser, token: signUser(publicUser) });
@@ -77,7 +82,7 @@ app.post('/api/auth/login', async (req, res) => {
 
 app.get('/api/users', requireAuth, requireAdmin, async (req, res) => {
   const { rows } = await query(
-    `SELECT u.id, u.name, u.email, u.role, u.created_at,
+    `SELECT u.id, u.name, u.email, u.role, u.gender, u.created_at,
        COALESCE(
          json_agg(
            json_build_object('id', c.id, 'title', c.title)
