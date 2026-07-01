@@ -862,7 +862,7 @@ main {
 
 .admin-stats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(112px, 1fr));
+  grid-template-columns: repeat(4, minmax(112px, 1fr));
   gap: 10px;
 }
 
@@ -954,9 +954,17 @@ main {
 
 .admin-list,
 .lesson-admin-list,
+.user-admin-list,
 .attendance-list {
   display: grid;
   gap: 10px;
+}
+
+.admin-note {
+  margin: -6px 0 4px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 .admin-list h4 {
@@ -1030,12 +1038,57 @@ main {
   margin-top: 18px;
 }
 
-.attendance-list div {
-  display: flex;
+.person-status-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   justify-content: space-between;
   gap: 14px;
-  padding: 12px 0;
-  border-top: 1px solid var(--line);
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card-strong);
+}
+
+.person-status-row strong,
+.person-status-row small,
+.user-row strong,
+.user-row small {
+  display: block;
+}
+
+.person-status-row small,
+.user-row small {
+  margin-top: 4px;
+  color: var(--muted);
+}
+
+.status-badge {
+  min-width: 92px;
+  padding: 7px 10px;
+  color: var(--primary-dark);
+  text-align: center;
+  border-radius: 999px;
+  background: var(--soft);
+}
+
+.status-badge.absent {
+  color: var(--danger);
+  background: #fff1ea;
+}
+
+.user-row {
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.9fr);
+}
+
+.user-circles {
+  min-width: 0;
+  text-align: right;
+}
+
+.user-circles strong {
+  color: var(--text);
+  font-weight: 700;
 }
 
 @media (max-width: 900px) {
@@ -1074,7 +1127,7 @@ main {
   }
 
   .admin-stats {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .home-hero-image {
@@ -1082,12 +1135,17 @@ main {
   }
 
   .lesson-card,
+  .user-row,
   .admin-list-row {
     grid-template-columns: 1fr;
   }
 
   .row-actions {
     justify-content: flex-start;
+  }
+
+  .user-circles {
+    text-align: left;
   }
 }
 

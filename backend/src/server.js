@@ -75,6 +75,26 @@ app.post('/api/auth/login', async (req, res) => {
   return res.json({ user: publicUser, token: signUser(publicUser) });
 });
 
+app.get('/api/users', requireAuth, requireAdmin, async (req, res) => {
+  const { rows } = await query(
+    `SELECT u.id, u.name, u.email, u.role, u.created_at,
+       COALESCE(
+         json_agg(
+           json_build_object('id', c.id, 'title', c.title)
+           ORDER BY c.title
+         ) FILTER (WHERE c.id IS NOT NULL),
+         '[]'
+       ) AS circles
+     FROM users u
+     LEFT JOIN circle_members cm ON cm.user_id = u.id
+     LEFT JOIN circles c ON c.id = cm.circle_id
+     GROUP BY u.id
+     ORDER BY u.created_at DESC, u.name ASC`,
+  );
+
+  res.json(rows);
+});
+
 app.get('/api/events', async (req, res) => {
   const { rows } = await query('SELECT * FROM events ORDER BY event_date ASC');
   res.json(rows);

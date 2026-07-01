@@ -827,6 +827,7 @@ function Admin({ events, circles, refreshEvents, refreshCircles, refreshLessons,
   const [editingCircleId, setEditingCircleId] = useState('');
   const [editingLessonId, setEditingLessonId] = useState('');
   const [adminLessons, setAdminLessons] = useState([]);
+  const [adminUsers, setAdminUsers] = useState([]);
   const [attendance, setAttendance] = useState([]);
   const [selectedLesson, setSelectedLesson] = useState('');
 
@@ -835,9 +836,16 @@ function Admin({ events, circles, refreshEvents, refreshCircles, refreshLessons,
     setAdminLessons(data);
   }, []);
 
+  const loadAdminUsers = useCallback(async () => {
+    const data = await apiRequest('/users');
+    setAdminUsers(data);
+  }, []);
+
   useEffect(() => {
-    loadAdminLessons().catch((error) => setMessage(error.message));
-  }, [loadAdminLessons, setMessage]);
+    Promise.all([loadAdminLessons(), loadAdminUsers()]).catch((error) =>
+      setMessage(error.message),
+    );
+  }, [loadAdminLessons, loadAdminUsers, setMessage]);
 
   useEffect(() => {
     if (!lessonForm.circleId && circles[0]?.id) {
@@ -1004,6 +1012,10 @@ function Admin({ events, circles, refreshEvents, refreshCircles, refreshLessons,
             <strong>{adminLessons.length}</strong>
             <span>занятий</span>
           </article>
+          <article>
+            <strong>{adminUsers.length}</strong>
+            <span>пользователей</span>
+          </article>
         </div>
       </div>
 
@@ -1160,6 +1172,10 @@ function Admin({ events, circles, refreshEvents, refreshCircles, refreshLessons,
 
         <div className="admin-card admin-table">
           <h3>Посещаемость</h3>
+          <p className="admin-note">
+            Нажмите на занятие, чтобы увидеть конкретных пользователей и их отметки.
+            По умолчанию пользователь считается присутствующим, пока сам не отметил “не буду”.
+          </p>
           {adminLessons.length === 0 ? (
             <p>Занятий пока нет.</p>
           ) : (
@@ -1191,9 +1207,46 @@ function Admin({ events, circles, refreshEvents, refreshCircles, refreshLessons,
           {attendance.length > 0 && (
             <div className="attendance-list">
               {attendance.map((person) => (
-                <div key={person.id}>
-                  <span>{person.name}</span>
-                  <strong>{person.status === 'absent' ? 'не будет' : 'будет'}</strong>
+                <div className="person-status-row" key={person.id}>
+                  <span>
+                    <strong>{person.name}</strong>
+                    <small>{person.email}</small>
+                  </span>
+                  <strong className={person.status === 'absent' ? 'status-badge absent' : 'status-badge'}>
+                    {person.status === 'absent' ? 'не будет' : 'будет'}
+                  </strong>
+                </div>
+              ))}
+            </div>
+          )}
+          {selectedLesson && attendance.length === 0 && (
+            <p className="admin-note">На кружок для этого занятия пока никто не записан.</p>
+          )}
+        </div>
+
+        <div className="admin-card admin-table">
+          <h3>Зарегистрированные пользователи</h3>
+          <p className="admin-note">
+            Здесь видно, кто создал аккаунт и на какие кружки записался.
+          </p>
+          {adminUsers.length === 0 ? (
+            <p>Пользователей пока нет.</p>
+          ) : (
+            <div className="user-admin-list">
+              {adminUsers.map((person) => (
+                <div className="admin-list-row user-row" key={person.id}>
+                  <span>
+                    <strong>{person.name}</strong>
+                    <small>{person.email}</small>
+                  </span>
+                  <span className="user-circles">
+                    <small>{person.role === 'admin' ? 'администратор' : 'пользователь'}</small>
+                    <strong>
+                      {person.circles.length > 0
+                        ? person.circles.map((circle) => circle.title).join(', ')
+                        : 'кружки не выбраны'}
+                    </strong>
+                  </span>
                 </div>
               ))}
             </div>
