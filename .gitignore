@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.env
+.DS_Store
+npm-debug.log*
+**/.env
+**/.DS_Store
+/Icon*
+/image*.jpg
+/imagt7.jpg
+/image3_files/
