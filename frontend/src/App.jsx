@@ -1190,7 +1190,10 @@ function Admin({ events, circles, refreshEvents, refreshCircles, refreshLessons,
                       <strong>{lesson.title}</strong>
                       <small>{lesson.circle_title} - {formatDate(lesson.lesson_date)}</small>
                     </span>
-                    <span>{lesson.attending_count}/{lesson.members_count}</span>
+                    <span className="lesson-count">
+                      <strong>{lesson.attending_count}/{lesson.members_count}</strong>
+                      <small>будут из записанных</small>
+                    </span>
                   </button>
                   <div className="row-actions">
                     <button className="secondary" onClick={() => editLesson(lesson)}>
@@ -1225,9 +1228,10 @@ function Admin({ events, circles, refreshEvents, refreshCircles, refreshLessons,
         </div>
 
         <div className="admin-card admin-table">
-          <h3>Зарегистрированные пользователи</h3>
+          <h3>Пользователи и запись на кружки</h3>
           <p className="admin-note">
             Здесь видно, кто создал аккаунт и на какие кружки записался.
+            Это не посещаемость: человек может быть записан на кружок, но отметить “не буду” на конкретное занятие выше.
           </p>
           {adminUsers.length === 0 ? (
             <p>Пользователей пока нет.</p>
@@ -1243,7 +1247,7 @@ function Admin({ events, circles, refreshEvents, refreshCircles, refreshLessons,
                     <small>{person.role === 'admin' ? 'администратор' : 'пользователь'}</small>
                     <strong>
                       {person.circles.length > 0
-                        ? person.circles.map((circle) => circle.title).join(', ')
+                        ? `записан(а): ${person.circles.map((circle) => circle.title).join(', ')}`
                         : 'кружки не выбраны'}
                     </strong>
                   </span>

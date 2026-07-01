@@ -1034,6 +1034,17 @@ main {
   opacity: 0.78;
 }
 
+.lesson-count {
+  flex: 0 0 auto;
+  min-width: 128px;
+  text-align: right;
+}
+
+.lesson-count strong,
+.lesson-count small {
+  display: block;
+}
+
 .attendance-list {
   margin-top: 18px;
 }
