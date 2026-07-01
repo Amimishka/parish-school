@@ -9,6 +9,7 @@
   --primary-dark: #385343;
   --accent: #a8753f;
   --soft: #edf2ea;
+  --surface-warm: #f4efe7;
   --danger: #9b4a36;
   color: var(--text);
   background: var(--bg);
@@ -399,7 +400,7 @@ main {
 .directions-section,
 .workflow-section,
 .auth-panel {
-  padding: 28px;
+  padding: 24px;
 }
 
 .section-title {
@@ -423,6 +424,27 @@ main {
 .centered-heading p {
   max-width: 540px;
   margin: 10px auto 0;
+}
+
+.section-heading-row {
+  grid-template-columns: minmax(220px, 0.62fr) minmax(0, 1fr);
+  align-items: end;
+  margin-bottom: 22px;
+}
+
+.section-heading-row > .eyebrow {
+  align-self: start;
+  margin-top: 6px;
+}
+
+.section-heading-row h2 {
+  margin-bottom: 0;
+}
+
+.section-heading-row p:not(.eyebrow) {
+  max-width: 620px;
+  margin-bottom: 3px;
+  font-size: 16px;
 }
 
 .eyebrow {
@@ -468,7 +490,7 @@ main {
 .about-grid article,
 .workflow-grid article,
 .schedule-preview article {
-  padding: 20px;
+  padding: 18px;
 }
 
 .about-grid svg {
@@ -486,17 +508,18 @@ main {
 .event-card img,
 .circle-image {
   width: 100%;
-  height: 180px;
+  height: 160px;
   object-fit: cover;
 }
 
 .direction-cards div,
 .event-card div,
 .circle-content {
-  padding: 18px;
+  padding: 18px 20px;
 }
 
 .schedule-preview article {
+  min-height: 154px;
   background: #f8fbf7;
 }
 
@@ -509,8 +532,20 @@ main {
 
 .schedule-preview span {
   display: block;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   font-weight: 700;
+}
+
+.schedule-preview h3,
+.event-card h3,
+.direction-cards h3 {
+  margin-bottom: 8px;
+}
+
+.schedule-preview p,
+.event-card p,
+.direction-cards p {
+  margin-bottom: 0;
 }
 
 .center-action {
@@ -559,24 +594,26 @@ main {
 
 .circle-card {
   display: grid;
-  grid-template-rows: 180px 1fr;
+  grid-template-rows: 160px 1fr;
 }
 
 .circle-content {
   display: grid;
-  align-content: start;
+  grid-template-rows: auto minmax(96px, 1fr) auto auto;
+  align-content: stretch;
+  min-height: 336px;
 }
 
 .circle-card .wide {
   align-self: end;
-  margin-top: 16px;
+  margin-top: 18px;
 }
 
 .circle-heading {
   display: flex;
   gap: 12px;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .circle-heading h3 {
@@ -585,10 +622,17 @@ main {
 
 .circle-icon,
 .avatar {
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   margin: 0;
   flex: 0 0 auto;
+}
+
+.circle-content > p {
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.62;
 }
 
 .meta {
@@ -596,7 +640,7 @@ main {
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
-  margin: 14px 0 16px;
+  margin: 14px 0 0;
 }
 
 .meta span {
@@ -610,6 +654,12 @@ main {
 
 .wide {
   width: 100%;
+}
+
+.circle-card .wide {
+  min-height: 48px;
+  font-size: 17px;
+  font-weight: 800;
 }
 
 .schedule-layout {

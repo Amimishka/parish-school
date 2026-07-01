@@ -417,9 +417,12 @@ function Home({ events, setPage }) {
       </section>
 
       <section className="section directions-section">
-        <div className="section-title centered">
-          <p className="eyebrow">Направления</p>
-          <h2>Чем занимается школа</h2>
+        <div className="split-heading section-heading-row">
+          <div>
+            <p className="eyebrow">Направления</p>
+            <h2>Чем занимается школа</h2>
+          </div>
+          <p>Основные кружки и приходские встречи, которые помогают детям спокойно входить в жизнь школы.</p>
         </div>
         <div className="direction-cards">
           {schoolDirections.map((direction) => (
@@ -435,11 +438,12 @@ function Home({ events, setPage }) {
       </section>
 
       <section className="section home-schedule surface">
-        <div className="split-heading centered-heading">
-          <h2>Расписание занятий</h2>
-          <p>
-            Ближайшие встречи и занятия кружков на этой неделе.
-          </p>
+        <div className="split-heading section-heading-row">
+          <div>
+            <p className="eyebrow">На этой неделе</p>
+            <h2>Расписание занятий</h2>
+          </div>
+          <p>Ближайшие встречи и занятия кружков на этой неделе.</p>
         </div>
         <div className="schedule-preview">
           {homeSchedule.map((item) => (
@@ -456,8 +460,11 @@ function Home({ events, setPage }) {
       </section>
 
       <section className="section workflow-section surface">
-        <div className="split-heading">
-          <h2>Как все устроено</h2>
+        <div className="split-heading section-heading-row">
+          <div>
+            <p className="eyebrow">Порядок записи</p>
+            <h2>Как все устроено</h2>
+          </div>
           <p>
             Выберите кружок, откройте расписание и следите за ближайшими встречами.
             Для семьи это один понятный маршрут без лишних страниц.
@@ -475,11 +482,12 @@ function Home({ events, setPage }) {
       </section>
 
       <section className="section news-section surface" id="events">
-        <div className="split-heading centered-heading">
-          <h2>Новости и события</h2>
-          <p>
-            Ближайшие праздники, мастерские и встречи школы.
-          </p>
+        <div className="split-heading section-heading-row">
+          <div>
+            <p className="eyebrow">Приходская жизнь</p>
+            <h2>Новости и события</h2>
+          </div>
+          <p>Ближайшие праздники, мастерские и встречи школы.</p>
         </div>
         {events.length === 0 ? (
           <EmptyState title="Мероприятий пока нет" text="Администратор сможет добавить их позже." />
