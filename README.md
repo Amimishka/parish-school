@@ -8,6 +8,7 @@
 - `backend` - Node.js/Express API.
 - `backend/db/schema.sql` - схема PostgreSQL.
 - `docs/project-spec.md` - описание проекта и логики.
+- `docs/admin-guide.md` - понятная инструкция для администратора сайта.
 
 ## Быстрый старт
 
