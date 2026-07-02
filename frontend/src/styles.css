@@ -1075,7 +1075,7 @@ main {
 }
 
 .status-badge {
-  min-width: 92px;
+  min-width: 112px;
   padding: 7px 10px;
   color: var(--primary-dark);
   text-align: center;
@@ -1083,9 +1083,19 @@ main {
   background: var(--soft);
 }
 
+.status-badge.attending {
+  color: var(--primary-dark);
+  background: var(--soft);
+}
+
 .status-badge.absent {
   color: var(--danger);
   background: #fff1ea;
+}
+
+.status-badge.unmarked {
+  color: var(--muted);
+  background: #f3efe8;
 }
 
 .user-row {

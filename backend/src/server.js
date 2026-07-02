@@ -205,7 +205,7 @@ app.delete('/api/circles/:id/join', requireAuth, async (req, res) => {
 
 app.get('/api/lessons/my', requireAuth, async (req, res) => {
   const { rows } = await query(
-    `SELECT l.*, c.title AS circle_title, COALESCE(la.status, 'attending') AS attendance_status
+    `SELECT l.*, c.title AS circle_title, la.status AS attendance_status
      FROM lessons l
      JOIN circles c ON c.id = l.circle_id
      JOIN circle_members cm ON cm.circle_id = c.id AND cm.user_id = $1
@@ -222,8 +222,9 @@ app.get('/api/lessons', requireAuth, requireAdmin, async (req, res) => {
   const { rows } = await query(
     `SELECT l.*, c.title AS circle_title,
        COUNT(cm.id)::int AS members_count,
-       COUNT(CASE WHEN COALESCE(la.status, 'attending') = 'attending' THEN 1 END)::int AS attending_count,
-       COUNT(CASE WHEN la.status = 'absent' THEN 1 END)::int AS absent_count
+       COUNT(CASE WHEN la.status = 'attending' THEN 1 END)::int AS attending_count,
+       COUNT(CASE WHEN la.status = 'absent' THEN 1 END)::int AS absent_count,
+       COUNT(CASE WHEN cm.id IS NOT NULL AND la.status IS NULL THEN 1 END)::int AS unmarked_count
      FROM lessons l
      JOIN circles c ON c.id = l.circle_id
      LEFT JOIN circle_members cm ON cm.circle_id = l.circle_id
@@ -327,13 +328,13 @@ app.post('/api/lessons/:id/attendance', requireAuth, async (req, res) => {
 
 app.get('/api/lessons/:id/attendance', requireAuth, requireAdmin, async (req, res) => {
   const { rows } = await query(
-    `SELECT u.id, u.name, u.email, COALESCE(la.status, 'attending') AS status
+    `SELECT u.id, u.name, u.email, la.status
      FROM lessons l
      JOIN circle_members cm ON cm.circle_id = l.circle_id
      JOIN users u ON u.id = cm.user_id
      LEFT JOIN lesson_attendance la ON la.lesson_id = l.id AND la.user_id = u.id
      WHERE l.id = $1
-     ORDER BY status ASC, u.name ASC`,
+     ORDER BY la.status ASC NULLS FIRST, u.name ASC`,
     [req.params.id],
   );
 

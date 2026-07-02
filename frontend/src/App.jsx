@@ -1187,7 +1187,7 @@ function Admin({ events, circles, refreshEvents, refreshCircles, refreshLessons,
           <h3>Посещаемость</h3>
           <p className="admin-note">
             Нажмите на занятие, чтобы увидеть конкретных пользователей и их отметки.
-            По умолчанию пользователь считается присутствующим, пока сам не отметил “не буду”.
+            Новые занятия сначала имеют статус “не отмечено”, пока пользователь сам не выберет “буду” или “не буду”.
           </p>
           {adminLessons.length === 0 ? (
             <p>Занятий пока нет.</p>
@@ -1205,7 +1205,9 @@ function Admin({ events, circles, refreshEvents, refreshCircles, refreshLessons,
                     </span>
                     <span className="lesson-count">
                       <strong>{lesson.attending_count}/{lesson.members_count}</strong>
-                      <small>будут из записанных</small>
+                      <small>
+                        будут, {lesson.absent_count} не будут, {lesson.unmarked_count} без отметки
+                      </small>
                     </span>
                   </button>
                   <div className="row-actions">
@@ -1228,8 +1230,8 @@ function Admin({ events, circles, refreshEvents, refreshCircles, refreshLessons,
                     <strong>{person.name}</strong>
                     <small>{person.email}</small>
                   </span>
-                  <strong className={person.status === 'absent' ? 'status-badge absent' : 'status-badge'}>
-                    {person.status === 'absent' ? 'не будет' : 'будет'}
+                  <strong className={attendanceStatusClass(person.status)}>
+                    {attendanceStatusText(person.status)}
                   </strong>
                 </div>
               ))}
@@ -1327,6 +1329,18 @@ function scrollToEvents() {
 
 function joinedWord(gender) {
   return gender === 'male' ? 'записан' : 'записана';
+}
+
+function attendanceStatusText(status) {
+  if (status === 'attending') return 'будет';
+  if (status === 'absent') return 'не будет';
+  return 'не отмечено';
+}
+
+function attendanceStatusClass(status) {
+  if (status === 'absent') return 'status-badge absent';
+  if (status === 'attending') return 'status-badge attending';
+  return 'status-badge unmarked';
 }
 
 function formatDate(value) {
