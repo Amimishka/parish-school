@@ -236,23 +236,62 @@ app.get('/api/lessons', requireAuth, requireAdmin, async (req, res) => {
 
 app.post('/api/lessons', requireAuth, requireAdmin, async (req, res) => {
   const { circleId, title, description, lessonDate, startTime, endTime, location } = req.body;
+
+  if (!circleId || !lessonDate || !startTime || !endTime) {
+    return res.status(400).json({ message: 'Выберите кружок, дату и время занятия' });
+  }
+
+  const circle = await query('SELECT title FROM circles WHERE id = $1', [circleId]);
+  if (!circle.rows[0]) {
+    return res.status(404).json({ message: 'Кружок не найден' });
+  }
+
+  const lessonTitle = title?.trim() || circle.rows[0].title;
   const { rows } = await query(
     `INSERT INTO lessons (circle_id, title, description, lesson_date, start_time, end_time, location)
      VALUES ($1, $2, $3, $4, $5, $6, $7)
      RETURNING *`,
-    [circleId, title, description, lessonDate, startTime, endTime, location],
+    [
+      circleId,
+      lessonTitle,
+      description?.trim() || null,
+      lessonDate,
+      startTime,
+      endTime,
+      location?.trim() || null,
+    ],
   );
   res.status(201).json(rows[0]);
 });
 
 app.put('/api/lessons/:id', requireAuth, requireAdmin, async (req, res) => {
   const { circleId, title, description, lessonDate, startTime, endTime, location } = req.body;
+
+  if (!circleId || !lessonDate || !startTime || !endTime) {
+    return res.status(400).json({ message: 'Выберите кружок, дату и время занятия' });
+  }
+
+  const circle = await query('SELECT title FROM circles WHERE id = $1', [circleId]);
+  if (!circle.rows[0]) {
+    return res.status(404).json({ message: 'Кружок не найден' });
+  }
+
+  const lessonTitle = title?.trim() || circle.rows[0].title;
   const { rows } = await query(
     `UPDATE lessons
      SET circle_id = $1, title = $2, description = $3, lesson_date = $4, start_time = $5, end_time = $6, location = $7
      WHERE id = $8
      RETURNING *`,
-    [circleId, title, description, lessonDate, startTime, endTime, location, req.params.id],
+    [
+      circleId,
+      lessonTitle,
+      description?.trim() || null,
+      lessonDate,
+      startTime,
+      endTime,
+      location?.trim() || null,
+      req.params.id,
+    ],
   );
 
   if (!rows[0]) {

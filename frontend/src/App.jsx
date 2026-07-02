@@ -1123,7 +1123,6 @@ function Admin({ events, circles, refreshEvents, refreshCircles, refreshLessons,
             placeholder="Название"
             value={lessonForm.title}
             onChange={(event) => setLessonForm({ ...lessonForm, title: event.target.value })}
-            required
           />
           <textarea
             placeholder="Описание"
